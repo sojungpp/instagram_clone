@@ -11,5 +11,4 @@ import lombok.Setter;
 public class GetPostImgRes {
     private int postImgUrlIdx;
     private String imgUrl;
-
 }

@@ -57,7 +57,7 @@ public class PostDao {
                         rs.getInt("userIdx"),
                         rs.getString("nickname"),
                         rs.getString("profileImgUrl"),
-                        rs.getString("contents"),
+                        rs.getString("content"),
                         rs.getInt("postLikeCount"),
                         rs.getInt("commentCount"),
                         rs.getString("updatedAt"),
