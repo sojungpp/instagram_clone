@@ -9,8 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.demo.config.BaseResponseStatus.POST_USERS_EMPTY_EMAIL;
-import static com.example.demo.config.BaseResponseStatus.POST_USERS_INVALID_EMAIL;
+import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.utils.ValidationRegex.isRegexEmail;
 
 @RestController
@@ -36,19 +35,12 @@ public class UserController {
 
 
 
-    /**
-     * 회원 조회 API
-     * [GET] /users
-     * 이메일 검색 조회 API
-     * [GET] /users? Email=
-     * @return BaseResponse<GetUserRes>
-     */
-    //Query String
+    //유저 피드 조회
     @ResponseBody
-    @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/users
+    @GetMapping("/{userIdx}")
     public BaseResponse<GetUserFeedRes> getUserFeed(@PathVariable("userIdx") int userIdx) {
         try{
-
+            //본인 피드인지 여부 확인 위해 userIdx
             GetUserFeedRes getUserFeedRes = userProvider.retrieveUserFeed(userIdx,userIdx);
             return new BaseResponse<>(getUserFeedRes);
         } catch(BaseException exception){
@@ -63,6 +55,30 @@ public class UserController {
 
             GetUserRes getUsersRes = userProvider.getUsersByIdx(userIdx);
             return new BaseResponse<>(getUsersRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    // 로그인 API
+    @ResponseBody
+    @PostMapping("/login") // (POST) 127.0.0.1:9000/users
+    public BaseResponse<PostLoginRes> login(@RequestBody PostLoginReq postLoginReq) {
+        try{
+            if(postLoginReq.getEmail() == null){
+                return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
+            }
+
+            if(postLoginReq.getPassword() == null){
+                return new BaseResponse<>(POST_USERS_EMPTY_PASSWORD);
+            }
+
+            if(!isRegexEmail(postLoginReq.getEmail())){
+                return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
+            }
+
+            PostLoginRes postLoginRes = userService.login(postLoginReq);
+            return new BaseResponse<>(postLoginRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
@@ -102,14 +118,14 @@ public class UserController {
     @PatchMapping("/{userIdx}") // (PATCH) 127.0.0.1:9000/users/:userIdx
     public BaseResponse<String> modifyUserName(@PathVariable("userIdx") int userIdx, @RequestBody User user){
         try {
-            /* TODO: jwt는 다음주차에서 배울 내용입니다!
-            jwt에서 idx 추출.
+            // TODO: jwt는 다음주차에서 배울 내용입니다!
+            //jwt에서 idx 추출.
             int userIdxByJwt = jwtService.getUserIdx();
-            userIdx와 접근한 유저가 같은지 확인
+            //userIdx와 접근한 유저가 같은지 확인
             if(userIdx != userIdxByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            */
+
 
             PatchUserReq patchUserReq = new PatchUserReq(userIdx,user.getNickName());
             userService.modifyUserName(patchUserReq);

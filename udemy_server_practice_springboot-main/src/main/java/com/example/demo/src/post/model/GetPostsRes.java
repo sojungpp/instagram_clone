@@ -21,5 +21,4 @@ public class GetPostsRes {
     private String updatedAt;
     private String likeOrNot;
     private List<GetPostImgRes> imgs;
-
 }

@@ -28,10 +28,10 @@ public class JwtService {
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam("type","jwt")
-                .claim("userIdx",userIdx)
+                .claim("userIdx",userIdx) //담을 정보
                 .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365)))
-                .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY)
+                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365))) //만료기간
+                .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY) //HS256 = 알고리즘, key = 비밀키
                 .compact();
     }
 

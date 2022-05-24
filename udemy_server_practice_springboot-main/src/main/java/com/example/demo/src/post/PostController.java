@@ -38,7 +38,6 @@ public class PostController {
     @GetMapping("")
     public BaseResponse<List<GetPostsRes>> getPosts(@RequestParam int userIdx) {
         try{
-
             List<GetPostsRes> getPostsRes = postProvider.retrievePosts(userIdx);
             return new BaseResponse<>(getPostsRes);
         } catch(BaseException exception){
@@ -51,6 +50,13 @@ public class PostController {
     @PostMapping("")
     public BaseResponse<PostPostsRes> createPosts(@RequestBody PostPostsReq postPostsReq) {
         try{
+            //userIdx를 jwt로
+            int userIdxByJwt = jwtService.getUserIdx();
+            if(postPostsReq.getUserIdx()!=userIdxByJwt){
+                return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
+            }
+
+
             //config-BaseResponseStatus에 에러코드 추가해준 후, validation처리
             if(postPostsReq.getContent().length()>450) {
                 return new BaseResponse<>(BaseResponseStatus.POST_POSTS_INVALID_CONTENTS);

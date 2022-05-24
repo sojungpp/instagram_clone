@@ -37,9 +37,7 @@ public class PostProvider {
             throw new BaseException(USERS_EMPTY_USER_ID);
         }
         try{
-
             List<GetPostsRes> getPosts = postDao.selectPosts(userIdx);
-
             return getPosts;
         }
         catch (Exception exception) {

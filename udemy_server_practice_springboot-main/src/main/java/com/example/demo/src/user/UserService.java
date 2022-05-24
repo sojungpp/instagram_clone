@@ -3,9 +3,7 @@ package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
 
-import com.example.demo.src.user.model.PatchUserReq;
-import com.example.demo.src.user.model.PostUserReq;
-import com.example.demo.src.user.model.PostUserRes;
+import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import com.example.demo.utils.SHA256;
 import org.slf4j.Logger;
@@ -39,11 +37,11 @@ public class UserService {
         if(userProvider.checkEmail(postUserReq.getEmail()) ==1){
             throw new BaseException(POST_USERS_EXISTS_EMAIL);
         }
-
         String pwd;
         try{
             //암호화
-            pwd = new SHA256().encrypt(postUserReq.getPassword());  postUserReq.setPassword(pwd);
+            pwd = new SHA256().encrypt(postUserReq.getPassword());
+            postUserReq.setPassword(pwd);
         } catch (Exception ignored) {
             throw new BaseException(PASSWORD_ENCRYPTION_ERROR);
         }
@@ -54,6 +52,7 @@ public class UserService {
             String jwt = jwtService.createJwt(userIdx);
             return new PostUserRes(jwt,userIdx);
         } catch (Exception exception) {
+            System.out.println(exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -69,4 +68,24 @@ public class UserService {
         }
     }
 
+    //userDao에 전달해서 그에 해당하는 정보 받아옴. 비번 받아와서 비번 비교!
+    public PostLoginRes login(PostLoginReq postLoginReq) throws BaseException {
+        User user = userDao.getPassword(postLoginReq);
+        String encryptPwd;
+
+        try{
+            //utils>SHA256 = 암호화
+            encryptPwd = new SHA256().encrypt(postLoginReq.getPassword());
+        } catch(Exception exception){
+            throw new BaseException(PASSWORD_ENCRYPTION_ERROR);
+        }
+        //일치하면 JWT반환, utils>JwtService
+        if(user.getPassword().equals(encryptPwd)){
+            int userIdx = user.getUserIdx();
+            String jwt = jwtService.createJwt(userIdx);
+            return new PostLoginRes(userIdx, jwt);
+        }
+        else
+            throw new BaseException(FAILED_TO_LOGIN);
+    }
 }
