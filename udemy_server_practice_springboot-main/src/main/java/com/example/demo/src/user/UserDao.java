@@ -106,6 +106,15 @@ public class UserDao {
 
     }
 
+    public int checkNickName(String nickName){
+        String checkNickNameQuery = "select exists(select nickName from User where nickName = ?)";
+        String checkNickNameParams = nickName;
+        return this.jdbcTemplate.queryForObject(checkNickNameQuery,
+                int.class,
+                checkNickNameParams);
+
+    }
+
     public int checkUserExist(int userIdx){
         String checkUserExistQuery = "select exists(select userIdx from User where userIdx = ?)";
         int checkUserExistParams = userIdx;
@@ -139,4 +148,13 @@ public class UserDao {
                 getPwdParams
         );
     }
+
+//    public PostLoginJwtRes loginJwt(int userIdx) {
+//        String getLoginJwtQuery = "select userIdx from User where userIdx = ?";
+//        int getLoginJwtParams = userIdx;
+//        return this.jdbcTemplate.queryForObject(getLoginJwtQuery,
+//                (rs, rowNum) -> new PostLoginJwtRes(
+//                        rs.getInt("userIdx"),
+//                        getLoginJwtParams);
+//    }
 }

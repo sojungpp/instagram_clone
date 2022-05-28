@@ -60,7 +60,11 @@ public class UserController {
         }
     }
 
-    // 로그인 API
+    /**
+     * 로그인 API
+     * [POST] /login
+     * @return BaseResponse<PostLoginRes>
+     */
     @ResponseBody
     @PostMapping("/login") // (POST) 127.0.0.1:9000/users
     public BaseResponse<PostLoginRes> login(@RequestBody PostLoginReq postLoginReq) {
@@ -84,20 +88,46 @@ public class UserController {
         }
     }
 
+//    //자동로그인 API
+//    @ResponseBody
+//    @PostMapping("/jwt")
+//    public BaseResponse<PostLoginJwtRes> loginJwt() {
+//        try{
+//            //userIdx를 jwt로
+//            int userIdxByJwt = jwtService.getUserIdx();
+//            if(postPostsReq.getUserIdx()!=userIdxByJwt){
+//                return new BaseResponse<>(BaseResponseStatus.INVALID_USER_JWT);
+//            }
+//
+//
+//            PostLoginJwtRes postJwtLoginRes = userProvider.loginJwt(userIdxByJwt);
+//            return new BaseResponse<>(postJwtLoginRes);
+//        } catch(BaseException exception){
+//            return new BaseResponse<>((exception.getStatus()));
+//        }
+//    }
+
+
     /**
      * 회원가입 API
      * [POST] /users
      * @return BaseResponse<PostUserRes>
      */
-    // Body
     @ResponseBody
     @PostMapping("") // (POST) 127.0.0.1:9000/users
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
-        // TODO: email 관련한 짧은 validation 예시입니다. 그 외 더 부가적으로 추가해주세요!
         if(postUserReq.getEmail() == null){
             return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
         }
-        // 이메일 정규표현
+        if(postUserReq.getNickName() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_NICKNAME);
+        }
+        if(postUserReq.getName() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_NAME);
+        }
+        if(postUserReq.getPassword() == null){
+            return new BaseResponse<>(POST_USERS_EMPTY_PASSWORD);
+        }
         if(!isRegexEmail(postUserReq.getEmail())){
             return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
         }
@@ -108,6 +138,8 @@ public class UserController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+
 
     /**
      * 유저정보변경 API
@@ -136,5 +168,4 @@ public class UserController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
-
 }

@@ -31,10 +31,11 @@ public class UserService {
 
     }
 
-
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
-        // 이메일 중복 확인 = 의미적 valication 처리
-        if(userProvider.checkEmail(postUserReq.getEmail()) ==1){
+        if(userProvider.checkEmail(postUserReq.getEmail()) == 1){
+            throw new BaseException(POST_USERS_EXISTS_EMAIL);
+        }
+        if(userProvider.checkNickName(postUserReq.getNickName()) == 1){
             throw new BaseException(POST_USERS_EXISTS_EMAIL);
         }
         String pwd;
@@ -47,8 +48,7 @@ public class UserService {
         }
         try{
             int userIdx = userDao.createUser(postUserReq);
-            //jwt 발급.
-            // TODO: jwt는 다음주차에서 배울 내용입니다!
+            //jwt 발급
             String jwt = jwtService.createJwt(userIdx);
             return new PostUserRes(jwt,userIdx);
         } catch (Exception exception) {
