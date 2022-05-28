@@ -36,6 +36,10 @@ public enum BaseResponseStatus {
 
     POST_USERS_EMPTY_PASSWORD(false, 2030, "비밀번호를 입력해주세요."),
     POST_USERS_INVALID_PASSWORD(false, 2031, "비밀번호 형식을 확인해주세요."),
+    POST_USERS_EMPTY_NAME(false, 2032, "이름을 입력해주세요."),
+    POST_USERS_EMPTY_NICKNAME(false, 2032, "별명을 입력해주세요."),
+    POST_USERS_EXISTS_NICKNAME(false,2033,"중복된 별명입니다."),
+
 
 
 
