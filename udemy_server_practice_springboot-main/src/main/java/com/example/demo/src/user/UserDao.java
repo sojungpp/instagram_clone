@@ -149,6 +149,13 @@ public class UserDao {
         );
     }
 
+    public int deleteUser(int userIdx) {
+        String updateUserQuery = "UPDATE User SET status='INACTIVE' WHERE userIdx=?";
+        Object [] deleteUserParams = new Object[] {userIdx};
+        return this.jdbcTemplate.update(updateUserQuery, deleteUserParams);
+
+    }
+
 //    public PostLoginJwtRes loginJwt(int userIdx) {
 //        String getLoginJwtQuery = "select userIdx from User where userIdx = ?";
 //        int getLoginJwtParams = userIdx;
