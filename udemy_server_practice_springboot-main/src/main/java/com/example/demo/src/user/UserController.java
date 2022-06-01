@@ -168,4 +168,16 @@ public class UserController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+    //유저삭제API
+    @ResponseBody
+    @PatchMapping("/{userIdx}/status")
+    public BaseResponse<String> deletePost(@PathVariable ("userIdx") int userIdx) {
+        try{
+            userService.deleteUser(userIdx);
+            String result = "유저 비활성화를 완료하였습니다.";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 }

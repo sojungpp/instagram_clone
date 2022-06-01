@@ -88,4 +88,20 @@ public class UserService {
         else
             throw new BaseException(FAILED_TO_LOGIN);
     }
+
+    public void deleteUser(int userIdx) throws BaseException {
+        //게시글 validation
+        if(userProvider.checkUserExist(userIdx)==0) {
+            throw new BaseException(USERS_EMPTY_USER_ID);
+        }
+        try{
+            int result = userDao.deleteUser(userIdx);
+            if(result==0) {
+                throw new BaseException(DELETE_FAIL_POST);
+            }
+        }
+        catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
